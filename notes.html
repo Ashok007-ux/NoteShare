@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShareMind — Notes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <script src="index.js" defer></script>
+</head>
+
+<body>
+
+    <!-- ============================================================
+     AUTH SECTION
+============================================================ -->
+    <canvas id="bgCanvas2"></canvas>
+    <div id="authWrap">
+        <div class="auth-box" id="authBox">
+
+            <!-- ── LOGIN PAGE ── -->
+            <div class="auth-page active" id="pageLogin">
+                <div class="auth-logo">
+                    <div class="auth-logo-ring"><i class="fas fa-brain"></i></div>
+                    <div>
+                        <div class="auth-logo-name">ShareMind</div>
+                        <div class="auth-logo-sub">Your thought space</div>
+                    </div>
+                </div>
+                <h2 class="auth-title">Welcome back</h2>
+                <p class="auth-sub">Sign in to access your notes</p>
+
+                <div class="auth-alert" id="loginAlert"></div>
+
+                <div class="af-group">
+                    <label class="af-label">Email</label>
+                    <div class="af-field">
+                        <input class="af-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+                    </div>
+                    <p class="af-err" id="loginEmailErr">Please enter a valid email</p>
+                </div>
+
+                <div class="af-group">
+                    <div class="af-row">
+                        <label class="af-label" style="margin-bottom:0">Password</label>
+                        <button class="af-link" onclick="showPage('pageForgot')">Forgot password?</button>
+                    </div>
+                    <div class="af-field">
+                        <input class="af-input" id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" />
+                        <button class="af-eye" onclick="toggleEye('loginPass',this)"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <p class="af-err" id="loginPassErr">Password is required</p>
+                </div>
+
+                <button class="auth-btn" id="loginBtn" onclick="handleLogin()">
+        <div class="spin"></div>
+        <span class="btn-txt"><i class="fas fa-arrow-right-to-bracket"></i> Sign In</span>
+      </button>
+
+                <div class="auth-switch">
+                    Don't have an account?
+                    <button class="af-link" onclick="showPage('pageSignup')">Create one</button>
+                </div>
+            </div>
+
+            <!-- ── SIGNUP PAGE ── -->
+            <div class="auth-page" id="pageSignup">
+                <div class="auth-logo">
+                    <div class="auth-logo-ring"><i class="fas fa-brain"></i></div>
+                    <div>
+                        <div class="auth-logo-name">ShareMind</div>
+                        <div class="auth-logo-sub">Your thought space</div>
+                    </div>
+                </div>
+                <h2 class="auth-title">Create account</h2>
+                <p class="auth-sub">Start capturing your ideas today</p>
+
+                <div class="auth-alert" id="signupAlert"></div>
+
+                <div class="af-group">
+                    <label class="af-label">Full Name</label>
+                    <div class="af-field">
+                        <input class="af-input" id="signupName" type="text" placeholder="John Doe" autocomplete="name" />
+                    </div>
+                    <p class="af-err" id="signupNameErr">Please enter your name</p>
+                </div>
+
+                <div class="af-group">
+                    <label class="af-label">Email</label>
+                    <div class="af-field">
+                        <input class="af-input" id="signupEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+                    </div>
+                    <p class="af-err" id="signupEmailErr">Please enter a valid email</p>
+                </div>
+
+                <div class="af-group">
+                    <label class="af-label">Password</label>
+                    <div class="af-field">
+                        <input class="af-input" id="signupPass" type="password" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkStrength(this.value)" />
+                        <button class="af-eye" onclick="toggleEye('signupPass',this)"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <p class="af-err" id="signupPassErr">Password must be at least 8 characters</p>
+                    <div class="pw-strength" id="pwStrength">
+                        <div class="pw-bars">
+                            <div class="pw-bar" id="bar1"></div>
+                            <div class="pw-bar" id="bar2"></div>
+                            <div class="pw-bar" id="bar3"></div>
+                            <div class="pw-bar" id="bar4"></div>
+                        </div>
+                        <span class="pw-hint" id="pwHint">Too short</span>
+                    </div>
+                </div>
+
+                <div class="af-group">
+                    <label class="af-label">Confirm Password</label>
+                    <div class="af-field">
+                        <input class="af-input" id="signupPass2" type="password" placeholder="Re-enter password" autocomplete="new-password" />
+                        <button class="af-eye" onclick="toggleEye('signupPass2',this)"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <p class="af-err" id="signupPass2Err">Passwords do not match</p>
+                </div>
+
+                <button class="auth-btn" id="signupBtn" onclick="handleSignup()">
+        <div class="spin"></div>
+        <span class="btn-txt"><i class="fas fa-user-plus"></i> Create Account</span>
+      </button>
+
+                <div class="auth-switch">
+                    Already have an account?
+                    <button class="af-link" onclick="showPage('pageLogin')">Sign in</button>
+                </div>
+            </div>
+
+            <!-- ── FORGOT PASSWORD PAGE ── -->
+            <div class="auth-page" id="pageForgot">
+                <div class="auth-logo">
+                    <div class="auth-logo-ring"><i class="fas fa-brain"></i></div>
+                    <div>
+                        <div class="auth-logo-name">ShareMind</div>
+                        <div class="auth-logo-sub">Your thought space</div>
+                    </div>
+                </div>
+                <h2 class="auth-title">Reset password</h2>
+                <p class="auth-sub">Enter your email and we'll send you a reset link</p>
+
+                <div class="auth-alert" id="forgotAlert"></div>
+
+                <div class="af-group" id="forgotEmailGroup">
+                    <label class="af-label">Email</label>
+                    <div class="af-field">
+                        <input class="af-input" id="forgotEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+                    </div>
+                    <p class="af-err" id="forgotEmailErr">Please enter a valid email</p>
+                </div>
+
+                <button class="auth-btn" id="forgotBtn" onclick="handleForgot()">
+        <div class="spin"></div>
+        <span class="btn-txt"><i class="fas fa-paper-plane"></i> Send Reset Link</span>
+      </button>
+
+                <div class="auth-switch">
+                    <button class="af-link" onclick="showPage('pageLogin')">
+          <i class="fas fa-arrow-left" style="font-size:.7rem"></i> Back to sign in
+        </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================================
+     APP SECTION
+============================================================ -->
+    <div id="appWrap">
+        <canvas id="bgCanvas"></canvas>
+        <div class="shell" id="shell">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar" id="sidebar">
+                <button class="sb-close-btn" id="sbClose"><i class="fas fa-times"></i></button>
+                <div class="sb-head">
+                    <div class="logo">
+                        <div class="logo-ring"><i class="fas fa-brain"></i></div>
+                        <div class="logo-text">
+                            <span class="logo-name">ShareMind</span>
+                            <span class="logo-sub">Your thought space</span>
+                        </div>
+                    </div>
+                    <div class="user-chip" id="userChip">
+                        <div class="user-avatar" id="userAvatar">?</div>
+                        <div class="user-info">
+                            <div class="user-name" id="userNameEl">—</div>
+                            <div class="user-email" id="userEmailEl">—</div>
+                        </div>
+                        <button class="logout-btn" title="Sign out" onclick="handleLogout()">
+            <i class="fas fa-right-from-bracket"></i>
+          </button>
+                    </div>
+                </div>
+
+                <nav class="sb-nav">
+                    <p class="nav-section-label">Browse</p>
+                    <button class="nav-btn active" data-f="all"><i class="fas fa-border-all"></i> All Notes<span class="nav-pill" id="c-all">0</span></button>
+                    <button class="nav-btn" data-f="work"><i class="fas fa-briefcase"></i> Work<span class="nav-pill" id="c-work">0</span></button>
+                    <button class="nav-btn" data-f="personal"><i class="fas fa-user"></i> Personal<span class="nav-pill" id="c-personal">0</span></button>
+                    <button class="nav-btn" data-f="ideas"><i class="fas fa-lightbulb"></i> Ideas<span class="nav-pill" id="c-ideas">0</span></button>
+                    <button class="nav-btn" data-f="reminders"><i class="fas fa-bell"></i> Reminders<span class="nav-pill" id="c-reminders">0</span></button>
+                </nav>
+
+                <div class="sb-foot">
+                    <button class="theme-btn" id="themeBtnSb">
+          <i class="fas fa-moon" id="thIco"></i>
+          <span id="thTxt">Dark Mode</span>
+        </button>
+                </div>
+            </aside>
+            <div class="mob-veil" id="veil"></div>
+
+            <!-- MAIN -->
+            <main class="main">
+                <header class="topbar">
+                    <button class="ham-btn" id="hamBtn"><i class="fas fa-bars"></i></button>
+                    <div class="search-box">
+                        <i class="fas fa-search ic"></i>
+                        <input class="search-input" id="searchInp" placeholder="Search notes…" autocomplete="off" />
+                        <button class="clr-btn" id="clrBtn"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="topbar-right">
+                        <select class="sort-sel" id="sortSel">
+            <option value="new">Newest</option>
+            <option value="old">Oldest</option>
+            <option value="az">A → Z</option>
+          </select>
+                        <button class="add-btn" id="addBtn"><i class="fas fa-plus"></i><span>New Note</span></button>
+                    </div>
+                </header>
+
+                <div class="content">
+                    <div class="page-row">
+                        <div>
+                            <h2 class="page-title" id="pgTitle">All Notes</h2>
+                            <p class="page-count" id="pgCount">0 notes</p>
+                        </div>
+                    </div>
+                    <div class="stats-row" id="statsRow"></div>
+                    <div class="grid" id="grid"></div>
+                    <div class="empty" id="emptyEl">
+                        <div class="empty-ring"><i class="fas fa-feather-alt"></i></div>
+                        <h3>Nothing here yet</h3>
+                        <p>Create your first note and start capturing ideas that matter</p>
+                        <button class="empty-cta" id="emptyCta"><i class="fas fa-plus"></i> New Note</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- NOTE MODAL -->
+    <div class="overlay" id="overlay">
+        <div class="modal">
+            <div class="modal-head">
+                <h3 class="modal-title" id="mTitle">New Note</h3>
+                <button class="modal-x" id="mClose"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="noteForm" novalidate>
+                <input type="hidden" id="editId" />
+                <div>
+                    <label class="f-label">Title</label>
+                    <input class="f-input" id="fTitle" placeholder="Give your note a title…" required autocomplete="off" />
+                    <p class="err-txt" id="eTitle">Please add a title</p>
+                </div>
+                <div>
+                    <label class="f-label">Content</label>
+                    <textarea class="f-area" id="fBody" placeholder="Write your thoughts here…" required></textarea>
+                    <p class="err-txt" id="eBody">Please add some content</p>
+                </div>
+                <div class="f-row">
+                    <div class="f-half">
+                        <label class="f-label">Tag</label>
+                        <select class="f-sel" id="fTag">
+            <option value="ideas">💡 Ideas</option>
+            <option value="work">💼 Work</option>
+            <option value="personal">👤 Personal</option>
+            <option value="reminders">🔔 Reminders</option>
+          </select>
+                    </div>
+                    <div class="f-half">
+                        <label class="f-label">Accent</label>
+                        <div class="swatches" id="swatches">
+                            <button type="button" class="swatch on" data-c="violet" style="background:#7c6ff7"></button>
+                            <button type="button" class="swatch" data-c="rose" style="background:#f06292"></button>
+                            <button type="button" class="swatch" data-c="amber" style="background:#fbbf24"></button>
+                            <button type="button" class="swatch" data-c="teal" style="background:#2dd4bf"></button>
+                            <button type="button" class="swatch" data-c="sky" style="background:#38bdf8"></button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="f-label"><i class="fas fa-bell"></i> Reminder (optional)</label>
+                    <input type="datetime-local" class="f-input" id="fRemind" />
+                </div>
+                <div class="modal-foot">
+                    <button type="button" class="btn-cancel2" id="mCancel">Cancel</button>
+                    <button type="submit" class="btn-save" id="mSave"><i class="fas fa-check"></i> Save Note</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONFIRM DELETE -->
+    <div class="confirm-overlay" id="confOverlay">
+        <div class="confirm-box">
+            <div class="confirm-ico"><i class="fas fa-trash"></i></div>
+            <h4>Delete this note?</h4>
+            <p>This cannot be undone. The note will be gone permanently.</p>
+            <div class="confirm-row">
+                <button class="btn-cancel2" id="confNo">Keep it</button>
+                <button class="btn-del" id="confYes">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toasts"></div>
+</body>
+
+</html>
